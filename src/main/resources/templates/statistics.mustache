@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Статистика по загруженным файлам</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/styles/style.css">
+</head>
+<body>
+<form method="get" action="main_menu">
+    <button type="submit">На главную</button>
+</form>
+<form method="get" action="files_search">
+    <button type="submit">Поиск</button>
+</form>
+
+<h1>Статистика по загруженным файлам</h1>
+<table>
+    <tr>
+        <th>id</th>
+        <th>Имя</th>
+        <th>Путь</th>
+        <th>Размер</th>
+        <th>Дата добавления</th>
+    </tr>
+    {{#files}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{name}}</td>
+        <td>{{path}}</td>
+        <td>{{kilobytes}} кб</td>
+        <td>{{date}}</td>
+    </tr>
+    {{/files}}
+</table>
+</body>
+</html>

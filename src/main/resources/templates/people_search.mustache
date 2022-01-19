@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Люди</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/styles/style.css">
+</head>
+
+<body>
+<form method="get" action="main_menu">
+    <button type="submit">На главную</button>
+</form>
+<form method="get" action="people">
+    <button type="submit">Назад</button>
+</form>
+
+<b>Поиск людей</b>
+{{#message}}
+<div><span class="error">{{message}}</span></div>
+{{/message}}
+
+<form method="post" action="searchPeopleByAgeRange">
+    <button type="submit">По возрасту</button>
+    <span>от <input type="number" name="minAge" required value="1" placeholder="от"/> до <input type="number" name="maxAge" required value="100" placeholder="до"/> лет</span>
+</form>
+
+<form method="post" action="searchPeopleByName">
+    <button type="submit">По имени</button>
+    <input type="text" name="name" placeholder="Имя"/>
+</form>
+
+<form method="post" action="searchPeopleById">
+    <button type="submit">По id</button>
+    <input type="number" name="id" required value="0" placeholder="id"/>
+</form>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Возраст</th>
+    </tr>
+    {{#people}}
+        <tr>
+            <td>{{id}}</td>
+            <td>{{name}}</td>
+            <td>{{age}} лет</td>
+        </tr>
+    {{/people}}
+</table>
+</body>
+</html>

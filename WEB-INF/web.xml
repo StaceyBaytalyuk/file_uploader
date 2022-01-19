@@ -1,0 +1,6 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+    <welcome-file-list>
+        <welcome-file>main_menu.mustache</welcome-file>
+        <welcome-file>index.mustache</welcome-file>
+    </welcome-file-list>
+</web-app>

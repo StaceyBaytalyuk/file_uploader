@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Поиск файлов</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/styles/style.css">
+</head>
+<body>
+<form method="get" action="main_menu">
+    <button type="submit">На главную</button>
+</form>
+<form method="get" action="statistics">
+    <button type="submit">Назад</button>
+</form>
+
+<h1>Поиск файлов</h1>
+{{#message}}
+<div><span class="error">{{message}}</span></div>
+{{/message}}
+
+<form method="post" action="searchFilesByDateRange">
+    <button type="submit">По дате</button>
+    <span>от <input type="datetime-local" name="min"/> до <input type="datetime-local" name="max"/></span>
+</form>
+
+<form method="post" action="searchFilesByName">
+    <button type="submit">По имени</button>
+    <input type="text" name="name" placeholder="Имя файла"/>
+</form>
+
+<form method="post" action="searchFileById">
+    <button type="submit">По id</button>
+    <input type="number" name="id" required value="0" placeholder="id"/>
+</form>
+
+<table>
+    <tr>
+        <th>id</th>
+        <th>Имя</th>
+        <th>Путь</th>
+        <th>Размер</th>
+        <th>Дата добавления</th>
+    </tr>
+    {{#files}}
+    <tr>
+        <td>{{id}}</td>
+        <td>{{name}}</td>
+        <td>{{path}}</td>
+        <td>{{kilobytes}} кб</td>
+        <td>{{date}}</td>
+    </tr>
+    {{/files}}
+</table>
+</body>
+</html>

@@ -1,0 +1,24 @@
+table {
+    border-collapse: collapse;
+}
+
+table, td, th {
+    border: 2px solid #999;
+    padding: 5px;
+}
+
+span.error {
+    color: crimson;
+}
+
+input[type=text].short {
+    width: 45px;
+}
+
+input[type=text].medium {
+    width: 70px;
+}
+
+input[type=number].short {
+    width: 45px;
+}

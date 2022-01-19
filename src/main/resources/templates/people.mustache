@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Люди</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/styles/style.css">
+</head>
+
+<body>
+<form method="get" action="main_menu">
+    <button type="submit">На главную</button>
+</form>
+<form method="get" action="people_search">
+    <button type="submit">Поиск</button>
+</form>
+
+<b>Люди</b>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Возраст</th>
+    </tr>
+    {{#people}}
+        <tr>
+            <td>{{id}}</td>
+            <td>{{name}}</td>
+            <td>{{age}} лет</td>
+        </tr>
+    {{/people}}
+</table>
+</body>
+</html>
