@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Загрузить файл</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/styles/style.css">
+</head>
+<body>
+<form method="get" action="main_menu">
+    <button type="submit">На главную</button>
+</form>
+
+<h1>Загрузить файл</h1>
+{{#message}}
+<div><span class="error">{{message}}</span></div>
+{{/message}}
+
+<form method="POST" enctype="multipart/form-data" action="upload_form">
+    <table>
+        <tr><td>Файл для загрузки:</td><td><input type="file" name="file" /></td></tr>
+        <tr><td></td><td><input type="submit" value="Загрузить" /></td></tr>
+    </table>
+</form>
+
+<div>
+    <ul>
+        {{#files}}
+        <li>{{path}}/{{name}}</li>
+        {{/files}}
+    </ul>
+</div>
+</body>
+</html>
