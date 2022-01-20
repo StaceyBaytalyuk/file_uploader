@@ -6,5 +6,6 @@ public final class Constants {
     public static final char SEPARATOR = ',';
     public static final String[] CSV_HEADERS_PERSON = {"name", "age"};
     public static final String DEFAULT_UPLOAD_DIR = "upload-dir";
+    public static final int MAX_UPLOAD_SIZE_KILOBYTES = 128;
 
 }

@@ -25,6 +25,11 @@ public class File implements Serializable {
         this.name = name;
     }
 
+    public File(uploadingfiles.sql.model.File file) {
+        this.name = file.getName();
+        this.path = getPath();
+    }
+
     @Override
     public String toString() {
         return "File{ " + " name='" + name + ", path=" + path + " }";

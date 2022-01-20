@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import uploadingfiles.csv.CsvProcessor;
 import uploadingfiles.nosql.repository.FileRedisRepo;
+import uploadingfiles.sql.model.File;
 import uploadingfiles.sql.model.Person;
 import uploadingfiles.sql.repository.FileRepo;
 import uploadingfiles.sql.repository.PersonRepo;
@@ -34,24 +35,34 @@ public class FileUploadController {
     @Autowired
     public FileUploadController(StorageService storageService, FileRedisRepo fileRedisRepo, FileRepo filePostgresRepo, PersonRepo peopleRepo) {
         this.storageService = storageService;
-        this.fileRedisRepo = fileRedisRepo;
-        this.filePostgresRepo = filePostgresRepo;
         this.peopleRepo = peopleRepo;
+        this.filePostgresRepo = filePostgresRepo;
+        this.fileRedisRepo = fileRedisRepo;
+        initializeRedis();
     }
 
-    @GetMapping("upload_form")
-    public String uploadForm() {
-        return "upload_form";
+    // info about files in redis is lost after reloading of application
+    // so we have to copy it from postgres
+    private void initializeRedis() {
+        List<uploadingfiles.sql.model.File> postgresFiles = (List<File>) filePostgresRepo.findAll();
+        for (File file : postgresFiles) {
+            fileRedisRepo.add(new uploadingfiles.nosql.model.File(file));
+        }
+    }
+
+    @GetMapping("upload")
+    public String upload() {
+        return "upload";
     }
 
     @GetMapping
     public String uploadForm(Map<String, Object> model) {
         List<Object> files = new ArrayList<>(fileRedisRepo.findAll().values());
         model.put("files", files);
-        return uploadForm();
+        return upload();
     }
 
-    @PostMapping("/")
+    @PostMapping("upload_form")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, Map<String, Object> model) {
         if ( checkFile(file) ) {
             if ( !isAlreadySaved(file) ) {
@@ -65,6 +76,28 @@ public class FileUploadController {
         }
 
         return uploadForm(model);
+    }
+
+    @GetMapping("upload_form")
+    public String listUploadedFiles(Model model) {
+        model.addAttribute("files", storageService.loadAll().map(
+                path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
+                        "serveFile", path.getFileName().toString()).build().toUri().toString())
+                .collect(Collectors.toList()));
+        return "upload_form";
+    }
+
+    @GetMapping("upload_form/files/{filename:.+}")
+    @ResponseBody
+    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+        Resource file = storageService.loadAsResource(filename);
+        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    }
+
+    @ExceptionHandler(StorageFileNotFoundException.class)
+    public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
+        return ResponseEntity.notFound().build();
     }
 
     private void saveToRedis(MultipartFile file) {
@@ -94,25 +127,4 @@ public class FileUploadController {
         return false;
     }
 
-    @GetMapping("/")
-    public String listUploadedFiles(Model model) {
-        model.addAttribute("files", storageService.loadAll().map(
-                path -> MvcUriComponentsBuilder.fromMethodName(FileUploadController.class,
-                        "serveFile", path.getFileName().toString()).build().toUri().toString())
-                .collect(Collectors.toList()));
-        return "upload_form";
-    }
-
-    @GetMapping("/files/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
-        Resource file = storageService.loadAsResource(filename);
-        return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    }
-
-    @ExceptionHandler(StorageFileNotFoundException.class)
-    public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
-        return ResponseEntity.notFound().build();
-    }
 }
